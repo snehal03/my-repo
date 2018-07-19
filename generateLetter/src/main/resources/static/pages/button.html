@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Login</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../library/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="../library/css/font-awesome.min.css">
+
+<script src="../library/js/jquery.min.js"></script>
+<script src="../library/js/proper.min.js"></script>
+<script src="../library/js/bootstrap.min.js"></script>
+<style>
+.middle {
+	position: absolute;
+	left: 5%;
+	right: 0;
+	top: 35%;
+	background-image: linear-gradient(45deg, #cfd8dc, #546e7a);
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+	border-radius: 0;
+	background-color: #fff
+}
+
+.image-set {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.container-fluid {
+	position: absolute;
+	height: 100%;
+}
+
+.nav-bar {
+	border-radius: 0;
+	padding: 0;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.nav-row {
+	padding: 0;
+	margin: 0;
+}
+
+.button-row {
+	height: 100%;
+}
+
+.left {
+	padding: 0 !important
+}
+
+.button-submit {
+	background-color: #DC0000;
+	color: #fff;
+	border-radius: 0;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.btn-logout {
+	border-radius: 0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.right {
+	background-color: #aea3d3;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.welcome {
+	padding-top: 10px;
+	color: #2b75b4;
+}
+
+#username {
+	background: transparent;
+	border: none;
+	color: black;
+	
+}
+
+.bg-dark {
+	background: #59717d !important;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+</style>
+</head>
+
+<body>
+
+	<script type="text/javascript">
+		function release() {
+			window.location.href = "release.html";
+		}
+
+		function logout() {
+			localStorage.clear();
+			window.location.href = "../index.html";
+		}
+
+		$(document).ready(function() {
+			if(localStorage.getItem("authToken")==undefined){
+				window.location.href = "/";
+			}
+			var user = localStorage.getItem("login-user");
+			$("#username").val(user);
+
+		});
+	</script>
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+		<a class="navbar-brand" href="../index.html">AGFST HR</a>
+		<ul class="navbar-nav" style="right: 5%;">
+			<li class="nav-item"><a class="nav-link">Welcome: <input
+					type="text" id="username">
+			</a></li>
+			<li class="nav-item"
+				style="cursor: pointer; float: right;  position: absolute; right: 2%">
+				<a class="nav-link" onclick="logout()"  style="color:#fff">Logout</a></li>
+		</ul>
+	</nav>
+	<div class="container-fluid">
+
+		<div class="row button-row">
+			<div class="col-md-12 left">
+				<img src="../images/bg.jpg" class="image-set">
+
+				<!-- 	<div class="col-md-12 jumbotron nav-bar">
+					<div class="row nav-row">
+						<div class="col-md-6">
+							<label class="welcome">Welcome:</label> <input type="text"
+								id="username">
+						</div>
+						<div class="col-md-6" style="text-align: right">
+							<button type="button" class="btn btn-danger btn-logout"
+								title="Logout" onclick="logout()">Logout</button>
+						</div>
+					</div>
+				</div> -->
+				<div class="col-md-4 "></div>
+				<div class="col-md-4 jumbotron middle">
+
+					<button type="button"
+						class="btn btn-default btn-block button-submit"
+						style="color: #fff">Generate Offer</button>
+					<button type="button" href="release.html" onclick="release();"
+						class="btn btn-default btn-block button-submit">Generate
+						Experiance</button>
+				</div>
+				
+				<div class="col-md-4"></div>
+
+			</div>
+
+		</div>
+	</div>
+
+</body>
+
+</html>

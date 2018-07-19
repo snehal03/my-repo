@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <title>Letter</title>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <style>
+
+ 
+ .table-layout {
+	 width: 100%;
+ }
+ 
+
+
+ body {
+	 font-family: Helvetica,Arial,sans-serif;
+	 margin-left: 30px;
+	 margin-top: 25px;
+	 margin-bottom: 5px;
+ }
+
+
+
+ .text-center {
+	 font-size: 17px;
+	 line-height: 10%;
+ }
+
+ .p-sub {
+	 padding-left: 35%;
+	 padding-top: 8%;
+	 padding-bottom: 6%;
+	 font-size: 13px;
+ }
+
+ .heading {
+	 font-size: 20px;
+	 margin-top: 0;
+	 margin-bottom: 0;
+	 padding-left: 0px
+ }
+
+ .sec-heading {
+	 margin-top: 0;
+	 padding-left:4%;
+	 font-size: 13px;
+
+ }
+
+ .image-set {
+	 position: absolute;
+	 right: 5%;
+	 margin: auto;
+	 top: 3%;
+ }
+
+ .image {
+	 height: 60px;
+ }
+
+ .text-left {
+	 text-align: left;
+	 padding-left: 40px;
+ }
+
+ .first,
+ .second,
+ .third {
+	 margin-bottom: 20px;
+	 margin-top:0;
+ }
+
+ .last {
+ 	margin-bottom: 100px;
+ }
+
+ .para {
+ 	font-size: 13px;
+
+ }
+ 
+ .text-para {
+	 margin-bottom: 0px;
+	 margin-top:0;
+	 padding-bottom: 3px;
+	 line-height: 20px;
+ }
+
+ .emp-name {
+	 font-weight: bold 
+ }
+ .second-line{
+    margin-bottom: 0px;
+	padding-bottom: 3px;
+	line-height: 20px;
+	margin-bottom: 10px;
+ }
+ 
+ .footer-line{
+ 	margin-bottom: 10px;
+	padding-bottom: 3px;
+	line-height: 23px;
+ }
+ </style>
+</head>
+
+<body>
+	<div class="table table-layout">
+		<div>
+			<div>
+				<div class="text-left">
+					<p class="heading">Agile Soft Systems India Pvt Ltd.- Confidential	
+					</p>
+					<p class="sec-heading"># 301, M Arch Center, Sr No.48, Baner, Pune 411045</p>
+					
+				</div>
+				<div class="image-set">
+				<img src="${agsftLogo} " class="image">
+				</div>
+			</div>
+			<div class="text-center">
+				<div>
+				<p class="p-sub">Experience cum relieving Letter</p>
+				</div>
+			</div>
+			<div class="para">
+				<div>	
+					<p class="text-para">
+						This is to certify that
+					    <span class="emp-name" style="text-transform:capitalize; "> ${name}</span> was working with Agile Soft Systems India Pvt. Ltd. as
+						a 
+						<span class="emp-name" style="text-transform:capitalize"> ${designation} </span>
+						Since
+						<span > ${jdate}</span> to
+						<span >${rdate}.</span>
+					</p>
+				
+					<p class="second-line">${gender} has been relieved from all ${genderPro} duties pertaining to Agile Soft Systems India Pvt.
+						Ltd.organization on the
+						<span >${suffixMonth} ${suffixDay}<sup>${suffix}</sup> ${suffixYear}.
+						</span>
+					</p>
+					
+					<p class="third"> During ${genderPro} tenure, ${genderPro} services were found satisfactory.</p>
+					<p class="last">Agile Soft Systems wishes ${genderPro1} all the best in ${genderPro} future endeavors.</p>
+					
+					<p class="footer-line">
+						Bikram Ghuman
+					</p>
+					<p>
+						Director
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

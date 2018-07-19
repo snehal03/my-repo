@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Login</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="library/css/bootstrap.min.css">
+<script src="library/js/jquery.min.js"></script>
+<script src="library/js/proper.min.js"></script>
+<script src="library/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="library/css/toaster.css">
+<script src="library/js/toaster.js"></script>
+
+
+<style>
+.middle {
+	position: absolute;
+	left: 5%;
+	right: 0;
+	top: 15%;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+	border-radius: 0;
+	background-color: #fff;
+	background-image: linear-gradient(45deg, #cfd8dc, #546e7a);
+}
+
+.header {
+	position: absolute;
+	left: 12%;
+	right: 0;
+	top: 2%;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+	border-radius: 0;
+	background-color: #fff;
+	background-image: linear-gradient(45deg, #cfd8dc, #546e7a);
+}
+
+.button-row {
+	height: 100%;
+}
+
+.left {
+	padding: 0 !important
+}
+
+.image-set {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.inputBox {
+	background-color: transparent !important;
+	border: none;
+	border-bottom: 2px solid #2b75b4;
+	border-radius: 0;
+	margin-top: 34px;
+}
+
+.button-submit {
+	margin-top: 34px;
+	background-color: #DC0000;
+	color: #fff;
+	border-radius: 0;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.form-control:focus {
+	color: #495057;
+	background-color: #fff;
+	border-color: #80bdff;
+	outline: 0;
+	box-shadow: none;
+}
+
+.container-fluid {
+	position: absolute;
+	height: 100%;
+}
+
+.right {
+	background-color: #aea3d3
+}
+
+.bg-dark {
+	background: #59717d !important;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+</style>
+</head>
+
+<body>
+	<script type="text/javascript">
+		function login() {
+
+			var loginData = {};
+			var username = document.getElementById("email").value;
+			var password = document.getElementById("pwd").value;
+			$.ajax({
+				contentType : 'application/json',
+				processData : true,
+				async : false,
+				type : 'POST',
+				url : '/login',
+				data : JSON.stringify({
+					"username" : username,
+					"password" : password
+				}),
+
+				success : function(data) {
+					console.log("Login succeeded" + JSON.stringify(data));
+					if (data.response_code == 200) {
+						// window.alert("success");
+						toastr.info("Welcome..");
+						localStorage.setItem("login-user", username);
+						localStorage.setItem("authToken", data.response_body);
+						window.location.href = "pages/button.html";
+						// return false;
+					} else {
+						//window.alert("fail")
+						/* window.location.href = "/";
+						return false; */
+						toastr.error("please provide correct credentials.");
+					}
+				},
+				error : function() {
+					//	window.alert("fail")
+					//window.location.href = "/";
+					// return false;
+					toastr.error("failed to login.");
+				}
+			});
+
+		}
+
+		$(document).keypress(function(event) {
+
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if (keycode == '13') {
+				//alert('You pressed a "enter" key in somewhere');	
+				login();
+			}
+
+		});
+	</script>
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+		<a class="navbar-brand" style="color:#fff">AGFST HR</a>
+		<!-- <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="#">AGFST HR</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Logout</a>
+    </li>
+  </ul> -->
+	</nav>
+	<div class="container-fluid">
+		<div class="row button-row">
+			<div class="col-md-12 left">
+				<img src="../images/bg.jpg" class="image-set">
+				<div class="col-md-2"></div>
+				<div class="col-sm-4 jumbotron middle">
+					<!-- <form > -->
+					<div class="form-group" style="text-align: center">
+
+						<img src="images/agsft_logo.png">
+					</div>
+					<div class="form-group">
+
+						<input type="text" class="form-control inputBox" id="email"
+							placeholder="Username">
+					</div>
+					<div class="form-group">
+
+						<input type="password" class="form-control inputBox" id="pwd"
+							placeholder="Pasword">
+					</div>
+					<!-- href="pages/button.html" -->
+					<button type="submit" onclick="login();" id="loginbtn"
+						class="btn btn-default btn-block button-submit">Log In</button>
+					<!-- </form> -->
+				</div>
+				<div class="col-sm-6"></div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>

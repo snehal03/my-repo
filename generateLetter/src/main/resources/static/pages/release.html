@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="stylesheet" href="../library/css/bootstrap.min.css">
+<link rel="stylesheet" href="../library/css/toaster.css">
+
+<script src="../library/js/jquery.min.js"></script>
+<script src="../library/js/proper.min.js"></script>
+<script src="../library/js/bootstrap.min.js"></script>
+<script src="../library/js/toaster.js"></script>
+
+<style>
+.middle {
+	position: absolute;
+	left: 5%;
+	right: 0;
+	background-image: linear-gradient(45deg, #cfd8dc, #546e7a);
+	top: 16%;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+	border-radius: 0;
+	background-color: #fff
+}
+
+.nav-bar {
+	border-radius: 0;
+	padding: 0;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.nav-row {
+	padding: 0;
+	margin: 0;
+}
+
+.button-row {
+	height: 100%;
+}
+
+.left {
+	padding: 0 !important;
+}
+
+.image-set {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.container-fluid {
+	position: absolute;
+	height: 100%;
+}
+
+.right {
+	background-color: #aea3d3;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.button-submit {
+	background-color: #DC0000;
+	color: #fff;
+	border-radius: 0;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.form-control:focus {
+	color: #495057;
+	background-color: #fff;
+	border-color: #80bdff;
+	outline: 0;
+	box-shadow: none;
+}
+
+.inputBox {
+	border: none;
+	border-bottom: 2px solid #2b75b4;
+	background-color: transparent !important;
+	border-radius: 0;
+	margin-top: 20px
+}
+
+.btn-logout {
+	border-radius: 0;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.welcome {
+	padding-top: 10px;
+	color: #2b75b4;
+}
+
+#username {
+	background: transparent;
+	border: none;
+	color: black;
+	
+}
+
+.bg-dark {
+	background: #59717d !important;
+	box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+}
+
+.back-btn {
+    position: absolute;
+    left: 1%;
+    right: 0;
+    top: 2%;
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0
+		rgba(0, 0, 0, 0.19) !important;
+	border-radius:0;
+}
+</style>
+</head>
+
+<body>
+	<script type="text/javascript">
+		function gernateReleseLetter() {
+			var releaseData = {};
+			var name = document.getElementById("name").value;
+			var jdate = document.getElementById("jdate").value;
+			var rdate = document.getElementById("rdate").value;
+			var desg = document.getElementById("desg").value;
+			var gender;
+
+			if (document.getElementById('male').checked) {
+				gender = document.getElementById('male').value;
+			} else if (document.getElementById('female').checked) {
+				gender = document.getElementById('female').value;
+			}
+
+			if (name == '' || jdate == '' || rdate == '' || desg == '') {
+				toastr.error("Please fill all fields.");
+			} else {
+				var adate = new Date(jdate);
+				var bdate = new Date(rdate)
+				if (rdate >= jdate) {
+					$
+							.ajax({
+								url : '/generate/experienceLetter',
+								method : 'POST',
+								xhrFields : {
+									responseType : 'blob'
+								},
+								headers : {
+									'Authorization' : localStorage.getItem("authToken")
+								},
+								contentType : "application/json;charset=utf-8",
+								data : JSON.stringify({
+									"name" : name,
+									"joiningDate" : jdate,
+									"relievingDate" : rdate,
+									"gender" : gender,
+									"designation" : desg
+								}),
+
+								success : function(data) {
+									var a = document.createElement('a');
+									var url = window.URL.createObjectURL(data);
+									a.href = url;
+									a.download = name + '.pdf';
+									a.click();
+									window.URL.revokeObjectURL(url);
+									// window.alert("File downloaded.)
+									toastr.info("Realese letter downloaded succesfully.");
+									$("#name").val("");
+									$("#jdate").val("");
+									$("#rdate").val("");
+									$("#desg").val("");
+									$('#male').prop('checked', true);
+									//window.location.href = "button.html";
+								}
+							});
+				} else {
+
+					toastr.error("Please check joining and release date.");
+				}
+			}
+		}
+
+		function logout() {
+			localStorage.clear();
+			window.location.href = "/";
+		}
+
+		$(document).ready(function() {
+			if(localStorage.getItem("authToken")==undefined){
+				window.location.href = "/";
+			}
+			var user = localStorage.getItem("login-user");
+			$("#username").val(user);
+
+		});
+		
+		function backToButtonPage(){
+			window.location.href = "button.html";
+		}
+	</script>
+
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+		<a class="navbar-brand" href="../index.html">AGFST HR</a>
+		<ul class="navbar-nav" style=" right: 0;">
+			<li class="nav-item"><a class="nav-link">Welcome: <input
+					type="text" id="username">
+			</a></li>
+			<li class="nav-item"
+				style="cursor: pointer; float: right; position: absolute; right: 20px">
+				<a class="nav-link" onclick="logout()" style="color: #fff">Logout</a>
+			</li>
+		</ul>
+	</nav>
+	<div class="container-fluid">
+		<div class="row button-row">
+			<div class="col-md-12 left">
+				<img src="../images/bg.jpg" class="image-set">
+				<button type="button" class="btn btn-info back-btn" onclick="backToButtonPage()" >BACK</button>
+				<div class="col-sm-6 jumbotron middle">
+					<!-- <form> -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+
+								<input type="text" class="form-control inputBox"
+									style="text-transform: capitalize" id="name" placeholder="Name">
+							</div>
+						</div>
+						<div class="col-md-6">
+
+							<div class="form-group">
+
+								<input type="text" class="form-control inputBox"
+									style="text-transform: capitalize" id="desg"
+									placeholder="Designation">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+
+							<div class="form-group">
+
+								<input type="text" class="form-control inputBox"
+									placeholder="Date Of Joining" onfocus="(this.type='date')"
+									id="jdate">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+
+								<input type="text" class="form-control inputBox"
+									placeholder="Date Of Releasing" onfocus="(this.type='date')"
+									id="rdate">
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="radio">
+								<label>Select Gender</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="radio">
+								<label>Male : <input type="radio" value="male" checked
+									id="male" name="gender" style="margin-left: 20px;">
+								</label>
+							</div>
+							<div class="radio">
+								<label>Female : <input type="radio" value="female"
+									id="female" name="gender" style="margin-left: 3px;">
+								</label>
+							</div>
+						</div>
+
+
+
+
+
+
+
+						<button type="submit"
+							class="btn btn-default btn-block button-submit"
+							onclick="gernateReleseLetter()">Submit</button>
+						<!-- </form> -->
+					</div>
+
+				</div>
+				<div class="col-sm-1"></div>
+				<div class="col-sm-1"></div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
