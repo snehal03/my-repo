@@ -12,8 +12,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(makeFinal=false , level= AccessLevel.PRIVATE)
-public class ResetPasswordRequest {
+public class ChangePasswordRequest {
 
+	@NotNull(message = "Password can not be null")
+	String password;
+	
 	@NotNull(message = "New passsword can not be null")
 	String newPassword;
 	

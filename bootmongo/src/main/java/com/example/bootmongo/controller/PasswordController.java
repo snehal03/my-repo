@@ -1,10 +1,15 @@
 package com.example.bootmongo.controller;
 
-import javax.validation.Valid;
+import java.util.logging.Level;
 
+import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+
+import org.junit.validator.PublicClassValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bootmongo.constant.HttpStatusCodes;
 import com.example.bootmongo.exception.BootMongoException;
 import com.example.bootmongo.model.User;
+import com.example.bootmongo.model.UserToken;
 import com.example.bootmongo.repo.UserRepo;
+import com.example.bootmongo.repo.UserTokenRepo;
+import com.example.bootmongo.requestModel.ChangePasswordRequest;
 import com.example.bootmongo.requestModel.ResetPasswordRequest;
 import com.example.bootmongo.security.PasswordService;
 import com.example.bootmongo.utility.ApplicationUtility;
@@ -41,11 +49,15 @@ public class PasswordController {
 	@Autowired
 	PasswordService passwordService;
 
-	@RequestMapping(value = "${api.route.resetPassword}", method=RequestMethod.POST)
-	@ApiOperation(value = "Reset Password", notes = "Reset password of user")
-	public ResponseEntity<?> resetPassword(@RequestParam(value = "userId") String userId,
-			@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, BindingResult result) {
+	@Autowired
+	UserTokenRepo userTokenRepo;
+
+	@RequestMapping(value = "${api.route.changePassword}", method = RequestMethod.POST)
+	@ApiOperation(value = "Reset Password", notes = "Change user password ")
+	public ResponseEntity<?> changePassword(@RequestParam(value = "userId") String userId,
+			@Valid @RequestBody ChangePasswordRequest resetPasswordRequest, BindingResult result) {
 		if (result.hasErrors()) {
+			log.log(Level.SEVERE, "Change password with all values ");
 			return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.VALIDATION_ERROR,
 					result.getAllErrors().get(0).getDefaultMessage(), null));
 		} else {
@@ -53,7 +65,7 @@ public class PasswordController {
 			if (user != null) {
 				boolean passwordChange;
 				try {
-					passwordChange = passwordService.forgotPassword(resetPasswordRequest ,userId);
+					passwordChange = passwordService.changePassword(resetPasswordRequest, userId);
 					if (passwordChange) {
 						return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.OK,
 								applicationUtility.getMessage("reset.success"), null));
@@ -65,11 +77,71 @@ public class PasswordController {
 					return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.NOT_FOUND,
 							applicationUtility.getMessage("pass.not.match"), null));
 				}
-				
+
 			} else {
 				return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.NOT_FOUND,
 						applicationUtility.getMessage("user.not.exist"), null));
 			}
+		}
+	}
+
+	@RequestMapping(value = "${api.route.forgotPassword}", method = RequestMethod.GET)
+	public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+		User user = userRepo.findUserByEmail(email);
+		if (user == null) {
+
+			return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.NOT_FOUND,
+					applicationUtility.getMessage("user.not.exist"), null));
+		} else {
+
+			boolean fPass = passwordService.forgotPassword(email, user);
+			if (fPass) {
+				return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.OK,
+						applicationUtility.getMessage("forgot.password.sucess"), null));
+			} else {
+				return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.FAILED,
+						applicationUtility.getMessage("forgot.password.failure"), null));
+			}
+		}
+	}
+
+	@RequestMapping(value = "${api.route.resetPassword}/{token}/{email:.+}", method = RequestMethod.POST)
+	public ResponseEntity<?> resetPassword(@PathVariable("token") String token, @PathVariable("email") String email,
+			@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, BindingResult result) {
+		if (result.hasErrors()) {
+			log.log(Level.SEVERE, "Reset password with all values ");
+			return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.VALIDATION_ERROR,
+					result.getAllErrors().get(0).getDefaultMessage(), null));
+		} else {
+			User user = userRepo.findUserByEmail(email);
+			if (user != null) {
+				UserToken dbToken = userTokenRepo.getForgotPasswordToken(email);
+				if (dbToken == null) {
+
+					return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.NOT_FOUND,
+							applicationUtility.getMessage("reset.password.token.failure"), null));
+				} else {
+					if (dbToken.getToken().equals(token)) {
+						if (resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getCPassword())) {
+							passwordService.savePassword(resetPasswordRequest, user);
+							return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.OK,
+									applicationUtility.getMessage("reset.password.success"), null));
+						} else {
+
+							return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.FAILED,
+									applicationUtility.getMessage("reset.not.match"), null));
+						}
+					} else {
+						return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.FAILED,
+								applicationUtility.getMessage("reset.password.token.failure"), null));
+					}
+
+				}
+			} else {
+				return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.NOT_FOUND,
+						applicationUtility.getMessage("user.not.exist"), null));
+			}
+
 		}
 	}
 }

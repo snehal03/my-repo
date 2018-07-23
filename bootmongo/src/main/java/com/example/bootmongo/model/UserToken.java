@@ -22,4 +22,6 @@ public class UserToken {
 	String token;
 	
 	String email;
+	
+	String tokenType;
 }

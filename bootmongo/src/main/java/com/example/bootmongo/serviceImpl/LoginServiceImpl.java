@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.example.bootmongo.constant.TokenTypes;
 import com.example.bootmongo.exception.BootMongoException;
 import com.example.bootmongo.model.User;
 import com.example.bootmongo.model.UserToken;
@@ -62,6 +63,7 @@ public class LoginServiceImpl implements LoginService {
 			UserToken userLoginToken = new UserToken();
 			userLoginToken.setToken(token);
 			userLoginToken.setEmail(user.getEmail());
+			userLoginToken.setTokenType(new TokenTypes().LOGIN_TOKEN);
 			loginTokenRepo.save(userLoginToken);
 			return convertModelToResponse.getLoginResponse(user, token);
 		}
