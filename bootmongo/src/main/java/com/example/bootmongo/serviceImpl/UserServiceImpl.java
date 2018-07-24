@@ -3,6 +3,7 @@ package com.example.bootmongo.serviceImpl;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RoleRepo roleRepo;
 
+	@Autowired
+	private MongoOperations mongoOperations;
+	
 	@Override
 	public String addUser(UserRequest userModel) {
 
@@ -120,6 +124,12 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		userRepo.save(user);
+		return "OK";
+	}
+
+	@Override
+	public String deleteUser(User user) {
+		mongoOperations.remove(user);
 		return "OK";
 	}
 

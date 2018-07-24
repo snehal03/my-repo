@@ -12,4 +12,6 @@ public interface UserService {
 	public String addUser(UserRequest userModel);
 	
 	public String updateUser(UpdateUserRquest userModel, User user);
+
+	public String deleteUser(User user);
 }

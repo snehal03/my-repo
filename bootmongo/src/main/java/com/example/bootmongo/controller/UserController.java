@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.java.Log;
 
+/**
+ * 
+ * @author snehal
+ *
+ *User class contains services related to user
+ */
 @RestController
 @Api
 @Log
@@ -51,6 +58,12 @@ public class UserController {
 	@Autowired
 	private UserRepo userRepo;
 
+	/**
+	 * 
+	 * @param userModel Add user model
+	 * @param request Http request
+	 * @return Response entity with message
+	 */
 	@RequestMapping(value = "${api.route.addUser}", method = RequestMethod.POST)
 	@ApiOperation(value = "add user", notes = "Add user in application")
 	public ResponseEntity<?> addUser(@Valid @RequestBody UserRequest userModel, BindingResult result,
@@ -147,4 +160,37 @@ public class UserController {
 			}
 		}
 	}
+	
+	
+	@RequestMapping(value="${api.route.deleteUser}/{userId}", method=RequestMethod.POST)
+	@ApiOperation(value="Delete User", notes="Delete user")
+	public ResponseEntity<?> deleteUser(@PathVariable("userId") String userId , HttpServletRequest request){
+		String token = request.getHeader(tokenHeader);
+		String email = jwtTokenUtil.getUsernameFromToken(token);
+		if (email.isEmpty()) {
+			log.log(Level.SEVERE, "invalid credentials");
+			return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.UNAUTHORIZED,
+					applicationUtility.getMessage("login.invalidcredentail"), null));
+		} else {
+			User user = userRepo.findOne(userId);
+			if (user == null) {
+				log.log(Level.SEVERE, "user does not exist");
+				return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.FAILED,
+						applicationUtility.getMessage("user.not.exist"), null));
+			}else{
+				String response = userService.deleteUser(user);
+				if (response.equalsIgnoreCase("ok")) {
+					return ResponseEntity.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.OK,
+							applicationUtility.getMessage("user.delete.success"), null));
+				} else {
+					return ResponseEntity
+							.ok(bootMongoUtility.createResponseEntityDTO(HttpStatusCodes.FAILED,
+									applicationUtility.getMessage("user.delete.failed"), null));
+				}
+			}
+		}
+	}
+	
+	
+	
 }
