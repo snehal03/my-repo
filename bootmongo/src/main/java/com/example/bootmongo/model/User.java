@@ -29,6 +29,8 @@ public class User {
 	
 	String email;
 	
+	ArrayList<Address> address;
+	
 	ArrayList<Role> roles;
 
 }

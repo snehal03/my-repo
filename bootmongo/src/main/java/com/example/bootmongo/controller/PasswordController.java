@@ -3,9 +3,7 @@ package com.example.bootmongo.controller;
 import java.util.logging.Level;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
-import org.junit.validator.PublicClassValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
